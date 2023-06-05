@@ -10,7 +10,7 @@ import { Status } from '../enum/status';
   providedIn: 'root',
 })
 export class ServerService {
-  private readonly apiUrl = 'http://localhost:8080';
+  private readonly apiUrl = 'http://localhost:8080/server';
 
   constructor(private http: HttpClient) {}
 
@@ -34,21 +34,21 @@ export class ServerService {
   //otherwise it would be Observable<any>
   servers$ = <Observable<CustomResponse>>(
     this.http
-      .get<CustomResponse>(`${this.apiUrl}/server/list`)
+      .get<CustomResponse>(`${this.apiUrl}/list`)
       .pipe(tap(console.log), catchError(this.handleError))
   );
 
   save$ = (server: Server) =>
     <Observable<CustomResponse>>(
       this.http
-        .post<CustomResponse>(`${this.apiUrl}/server/save`, server)
+        .post<CustomResponse>(`${this.apiUrl}/save`, server)
         .pipe(tap(console.log), catchError(this.handleError))
     );
 
   ping$ = (ipAddress: string) =>
     <Observable<CustomResponse>>(
       this.http
-        .get<CustomResponse>(`${this.apiUrl}/server/ping/${ipAddress}`)
+        .get<CustomResponse>(`${this.apiUrl}/ping/${ipAddress}`)
         .pipe(tap(console.log), catchError(this.handleError))
     );
 
@@ -77,7 +77,7 @@ export class ServerService {
   delete$ = (serverId: number) =>
     <Observable<CustomResponse>>(
       this.http
-        .delete<CustomResponse>(`${this.apiUrl}/server/delete/${serverId}`)
+        .delete<CustomResponse>(`${this.apiUrl}/delete/${serverId}`)
         .pipe(tap(console.log), catchError(this.handleError))
     );
 
@@ -89,8 +89,8 @@ export class ServerService {
 
   private handleError(error: HttpErrorResponse): Observable<never> {
     console.log(error);
-    return throwError(() => {
-      `An error occured - Error code: ${error.status}`;
-    });
+    return throwError(
+      () => new Error(`An error occured - Error code: ${error.status}`)
+    );
   }
 }

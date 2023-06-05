@@ -36,7 +36,7 @@ public class ServerResource {
   private final ServerServiceImplementation serverService;
 
   @GetMapping("/list")
-  public ResponseEntity<Response> getServers() {
+  public ResponseEntity<Response> getServers() throws InterruptedException {
     return ResponseEntity.ok(
       Response.builder()
         .timeStamp(now())
@@ -67,7 +67,6 @@ public class ServerResource {
   public ResponseEntity<Response> saveServer(@RequestBody @Valid Server server) {
     //we grab the body of the request which is going to be the server and check the validation we added
     return ResponseEntity.ok(
-      //We could use ResponseEntity.created() but we won't be able to send a response.
       Response.builder()
         .timeStamp(now())
         .data(Map.of("server", serverService.create(server)))
